@@ -1,20 +1,22 @@
-// starting with the ONEMAX solution i made:
-
 #include <iostream>
 #include <vector>
 #include <bitset>
 #include <algorithm>
 #include <random>
 #include <cstdlib>
-// Note to self for what to do
-// Implemnt the tournament function 
-// Implement some notion of eliteism aka (top 5 chromosomes with highest fitness go though)
-// 
+
+//Hard constraints: student cant have >1 test on at a time
+//Soft constraint: minimize the consecutive tests for a student
 
 const int chromosomeSize = 8;
-const int totalGenerations = 20;
+const int totalGenerations = 10;
 const int POPULATION_SIZE = 100;
 const int tournament_Size = 3;
+// Specific to timetabling:
+
+const int EXAMS_TO_BE_SCHEDULED;
+const int AVAILABLE_TIME_SLOTS;
+const int NUMBER_OF_STUDENTS;
 
 using chromosome = std::bitset<chromosomeSize>; 
 
@@ -88,8 +90,7 @@ std::pair<chromosome, chromosome> singlePointCrossover(chromosome& parent1, chro
     return Children;
 }
 
-int main(){
-
+void runGA(){
     srand(time(NULL));
 
     // Generate starting population
@@ -150,6 +151,14 @@ int main(){
                 << ", Avg=" << averageFitness 
                 << ", Worst=" << worstFitness << std::endl;
             }
+
+}
+
+
+
+int main(){
+
+    runGA();
 
     return 0;
 }

@@ -5,6 +5,7 @@
 #include <random>
 #include <cstdlib>
 #include <array>
+#include <unordered_set>
 
 //Hard constraints: student cant have >1 test on at a time
 //Soft constraint: minimize the consecutive tests for a student
@@ -37,8 +38,7 @@ std::vector<GENOME> generatePopulation(){
         for(int j = 0; j < GENOME_SIZE; j++){
 
             geno[j] = rand() % AVAILABLE_TIME_SLOTS;
-            
-
+    
         }
         population.push_back(geno);
     }
@@ -46,9 +46,31 @@ std::vector<GENOME> generatePopulation(){
     return population;
     
 }
+// returns 0 if hard constraints violated
+int caculateFitness(GENOME geno){
+    // Hard constraints: set the fitness to 0 if the there are 2 of the same numbers.
 
-int caculateFitness(){
+    // find a duplicate in a string:
+
+    std::unordered_set<int> seen; 
+
+    for(int i = 0; i < geno.size(); i++){
+        if(seen.find(geno[i]) != seen.end()){
+            return 0;
+        }
+        seen.insert(geno[i]);
+    }
+    // test the soft constaints here!
+
+
+    return 2;
+}
+
+GENOME findParentTournament(std::vector<GENOME>){
+
     
+
+
 }
 
 
@@ -63,9 +85,11 @@ int main(){
         std::cout << index << " ";
         
         for(auto it = GENO.begin(); it != GENO.end(); ++it) {
-           std::cout <<  *it << "";       
-            
+           std::cout <<  *it;       
         }
+
+        std::cout << " " << "Fitness: " << caculateFitness(GENO); 
+
         std::cout << "\n";
         ++index;
     }

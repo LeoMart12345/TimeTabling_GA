@@ -8,6 +8,11 @@
 //Hard constraints: student cant have >1 test on at a time
 //Soft constraint: minimize the consecutive tests for a student
 
+// TODO: implement the new genome representation: 
+// Genome: [3, 1, 2, 1, 4, 2, 3, 4, 1, 2]
+// The index is the exam index 0 = exam 0;
+
+
 const int chromosomeSize = 8;
 const int totalGenerations = 10;
 const int POPULATION_SIZE = 100;

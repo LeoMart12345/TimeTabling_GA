@@ -15,7 +15,6 @@
 // Genome: [3, 1, 2, 1, 4, 2, 3, 4, 1, 2]
 // The index is the exam index 0 = exam 0;
 
-
 const int GENOME_SIZE = 8;
 const int totalGenerations = 10;
 const int POPULATION_SIZE = 100;
@@ -37,29 +36,20 @@ struct FileData {
     int numStudents;
 };
 
-FileData readMatrixFileAndMakeMatrix(const std::string& fileName){
-
+FileData readMatrixFileAndMakeMatrix(const std::string& fileName) {
+    FileData data;
     std::ifstream file(fileName);
-
-    if(!file.is_open()){
-        std::runtime_error("error opening the file");
-    }
-
-    int numExams, numTimeSlots, numStudents;
     
-    file >> numExams >> numTimeSlots >> numStudents;
-
-    std::cout << numExams << numTimeSlots << numStudents << "\n";
+    file >> data.numExams >> data.numTimeSlots >> data.numStudents;
     
-    enrolementMatrix readMatrix(numStudents, std::vector<int>(numExams));
-
-    for(int i = 0; i < numStudents; i++){
-        for(int j = 0; j < numExams; j++){
-            file >> readMatrix[i][j];
+    data.matrix = enrolementMatrix(data.numStudents, std::vector<int>(data.numExams));
+    
+    for(int i = 0; i < data.numStudents; i++) {
+        for(int j = 0; j < data.numExams; j++) {
+            file >> data.matrix[i][j];
         }
     }
-
-    return readMatrix;
+    return data;
 }
 
 
@@ -138,47 +128,35 @@ int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
 }
 
 int main(){
-    std::vector<GENOME> randPOP = generatePopulation();
-    int index = 1;
-        
-    for(const auto GENO : randPOP){
-        
-        
-        std::cout << index << " ";
-        
-        for(auto it = GENO.begin(); it != GENO.end(); ++it) {
-           std::cout <<  *it;       
-        }
+    //read in the data from the file
+    FileData fileStruct = readMatrixFileAndMakeMatrix("Matrix.txt");
 
-        enrolementMatrix testMatrix{
-            {1, 0, 0, 1, 0},
-            {1, 1, 0, 1, 0},
-            {0, 0, 1, 0, 0},
-            {1, 0, 0, 0, 1}
-        };
-        
-        std::cout << " " << "Fitness: " << caculateFitness(GENO, testMatrix); 
+    int numExams = fileStruct.numExams;
+    int numStudents = fileStruct.numStudents;
+    int numTimeSlots = fileStruct.numTimeSlots;
 
-        std::cout << "\n";
-        ++index;
-    }
+    enrolementMatrix matrix = fileStruct.matrix;
 
-    enrolementMatrix readMatrix =  readMatrixFileAndMakeMatrix("Matrix.txt");
-    
-    for(const auto& student: readMatrix){
+    // to print the matrix
+    for(const auto& student: matrix){
         for(const auto& exam : student){
-            std::cout << readMatrix[student.size()][exam] << " ";
+            std::cout << matrix[student.size()][exam] << " ";
         }
         std::cout << "\n";
     }
 
+    // generate the rand population
+    std::vector<GENOME> randPOP = generatePopulation(POPULATION_SIZE, numExams, numTimeSlots);
 
-    enrolementMatrix enrollment = readMatrixFileAndMakeMatrix("Matrix.txt");
-
-    int numExams = enrollment[0].size();
-    int numStudents = enrollment.size();
-
-
+    int index = 1;
+    for(const auto& genome : randPOP){
+        std::cout << index << " ";
+        for(const auto& num : genome){
+            std::cout << num;
+        }
+        std::cout << "\n";
+        index++;
+    }
 
 
     return 0;

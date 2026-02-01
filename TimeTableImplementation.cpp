@@ -53,6 +53,7 @@ FileData readMatrixFileAndMakeMatrix(const std::string& fileName) {
 }
 
 
+
 std::vector<GENOME> generatePopulation(int popSize, int numExams, int numTimeSlots) {
     std::vector<GENOME> population;
     
@@ -127,7 +128,24 @@ int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
 
 }
 
+GENOME tournamentSelection(const std::vector<GENOME>& pop, const std::vector<int> scores, int tournament_Size){
+    int bestIndex = rand() % pop.size();
+    int bestFitness = scores[bestIndex];
+
+    for(int i = 0; i < tournament_Size; i++){
+        int randomIndex = rand() % pop.size();
+        if(scores[randomIndex] > bestFitness){
+            bestFitness = scores[randomIndex];
+            bestIndex = randomIndex;
+        }        
+    }
+
+    return pop[bestIndex];
+}
+
 int main(){
+    srand(time(0));
+
     //read in the data from the file
     FileData fileStruct = readMatrixFileAndMakeMatrix("Matrix.txt");
 
@@ -147,6 +165,7 @@ int main(){
 
     // generate the rand population
     std::vector<GENOME> randPOP = generatePopulation(POPULATION_SIZE, numExams, numTimeSlots);
+    
 
     int index = 1;
     for(const auto& genome : randPOP){
@@ -158,6 +177,15 @@ int main(){
         index++;
     }
 
+    std::vector<int> scores;
+
+    for(const auto& geno : randPOP){
+        scores.push_back(caculateFitness(geno, matrix));
+    }
+
+    GENOME TPC = tournamentSelection(randPOP, scores, tournament_Size);
+
+    std::cout << "\n" << "fitness chosen: " << caculateFitness(TPC, matrix);
 
     return 0;
 }

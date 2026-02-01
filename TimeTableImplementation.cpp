@@ -166,7 +166,6 @@ int main(){
     // generate the rand population
     std::vector<GENOME> randPOP = generatePopulation(POPULATION_SIZE, numExams, numTimeSlots);
     
-
     int index = 1;
     for(const auto& genome : randPOP){
         std::cout << index << " ";

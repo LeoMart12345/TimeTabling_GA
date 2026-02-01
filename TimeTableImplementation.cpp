@@ -52,17 +52,55 @@ int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
     int hardViolations;
     int softViolations;
 
-    std::unordered_set<int> seen; 
 
     for(const auto& student : enrolementMatrix){
-        std::vector<int> studentsExams;
-        for(const auto& subject : student){
-        
+        std::vector<int> studentsExamTime;
+        int examID;
+
+        for(const auto& takesExam: student){
+            if(takesExam == 1){
+                int timeSlot = geno[examID];
+                studentsExamTime.push_back(timeSlot);
+            }
+            ++examID;
         }
+    
+
+    // check for hard constraints:
+        std::unordered_set<int> seen;
+
+        for(const auto& slot : studentsExamTime){
+            if(seen.find(slot) != seen.end()){
+                hardViolations++;
+                break;
+            }
+            seen.insert(slot);
+        }
+
+        if(studentsExamTime.size() > 1){
+            std::sort(studentsExamTime.begin(), studentsExamTime.end());
+
+            for(int i = 0; i < studentsExamTime.size() -1; i++){
+                if(studentsExamTime[i] == studentsExamTime[i+1]){
+                    softViolations++;
+                }
+            }
+        }
+        //else no soft violations as there is just 1 exam scheduled
+
+
+
+    }
+
+    if(hardViolations > 1){
+        return -1000;
+    }
+    else{
+        return 10 - softViolations;
     }
 
 
-    return score;
+    return 
 }
 
 // GENOME findParentTournament(std::vector<GENOME>){

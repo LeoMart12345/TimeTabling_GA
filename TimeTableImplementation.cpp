@@ -20,6 +20,7 @@ const int totalGenerations = 10;
 const int POPULATION_SIZE = 100;
 const int tournament_Size = 3;
 // Specific to timetabling:
+using enrolementMatrix = std::vector<std::vector<int>>;
 
 const int EXAMS_TO_BE_SCHEDULED = 5;
 const int AVAILABLE_TIME_SLOTS = 10;
@@ -42,36 +43,31 @@ std::vector<GENOME> generatePopulation(){
         }
         population.push_back(geno);
     }
-    
+
     return population;
     
 }
-// returns 0 if hard constraints violated
-int caculateFitness(GENOME geno){
-    // Hard constraints: set the fitness to 0 if the there are 2 of the same numbers.
 
-    // find a duplicate in a string:
+int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
+    int hardViolations;
+    int softViolations;
 
     std::unordered_set<int> seen; 
 
-    for(int i = 0; i < geno.size(); i++){
-        if(seen.find(geno[i]) != seen.end()){
-            return 0;
+    for(const auto& student : enrolementMatrix){
+        std::vector<int> studentsExams;
+        for(const auto& subject : student){
+        
         }
-        seen.insert(geno[i]);
     }
-    // test the soft constaints here!
 
 
-    return 2;
+    return score;
 }
 
-GENOME findParentTournament(std::vector<GENOME>){
+// GENOME findParentTournament(std::vector<GENOME>){
 
-    
-
-
-}
+// };
 
 
 int main(){

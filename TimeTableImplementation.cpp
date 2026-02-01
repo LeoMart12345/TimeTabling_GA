@@ -6,7 +6,8 @@
 #include <cstdlib>
 #include <array>
 #include <unordered_set>
-
+#include <iostream>
+#include <fstream>
 //Hard constraints: student cant have >1 test on at a time
 //Soft constraint: minimize the consecutive tests for a student
 
@@ -26,27 +27,59 @@ const int EXAMS_TO_BE_SCHEDULED = 5;
 const int AVAILABLE_TIME_SLOTS = 10;
 const int NUMBER_OF_STUDENTS = 5;
 
-using GENOME = std::array<int, GENOME_SIZE>;
+using GENOME = std::vector<int>;
 
-std::vector<GENOME> generatePopulation(){
-    
-    std::vector<GENOME> population;
 
-    for(int i = 0; i < POPULATION_SIZE; i++){
+struct FileData {
+    enrolementMatrix matrix;
+    int numExams;
+    int numTimeSlots;
+    int numStudents;
+};
 
-        GENOME geno;
+FileData readMatrixFileAndMakeMatrix(const std::string& fileName){
 
-        for(int j = 0; j < GENOME_SIZE; j++){
+    std::ifstream file(fileName);
 
-            geno[j] = rand() % AVAILABLE_TIME_SLOTS;
-    
-        }
-        population.push_back(geno);
+    if(!file.is_open()){
+        std::runtime_error("error opening the file");
     }
 
-    return population;
+    int numExams, numTimeSlots, numStudents;
     
+    file >> numExams >> numTimeSlots >> numStudents;
+
+    std::cout << numExams << numTimeSlots << numStudents << "\n";
+    
+    enrolementMatrix readMatrix(numStudents, std::vector<int>(numExams));
+
+    for(int i = 0; i < numStudents; i++){
+        for(int j = 0; j < numExams; j++){
+            file >> readMatrix[i][j];
+        }
+    }
+
+    return readMatrix;
 }
+
+
+std::vector<GENOME> generatePopulation(int popSize, int numExams, int numTimeSlots) {
+    std::vector<GENOME> population;
+    
+    for(int i = 0; i < popSize; i++) {
+        GENOME geno(numExams);
+        
+        for(int exam = 0; exam < numExams; exam++) {
+            geno[exam] = (rand() % numTimeSlots) + 1;
+        }
+        
+        population.push_back(geno);
+    }
+    
+    return population;
+}
+
+
 
 int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
     int hardViolations = 0;
@@ -82,7 +115,7 @@ int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
             std::sort(studentsExamTime.begin(), studentsExamTime.end());
 
             for(int i = 0; i < studentsExamTime.size() -1; i++){
-                if(studentsExamTime[i] == studentsExamTime[i+1]){
+                if(studentsExamTime[i] + 1 == studentsExamTime[i+1]){
                     softViolations++;
                 }
             }
@@ -124,12 +157,29 @@ int main(){
             {1, 0, 0, 0, 1}
         };
         
-
         std::cout << " " << "Fitness: " << caculateFitness(GENO, testMatrix); 
 
         std::cout << "\n";
         ++index;
     }
+
+    enrolementMatrix readMatrix =  readMatrixFileAndMakeMatrix("Matrix.txt");
     
+    for(const auto& student: readMatrix){
+        for(const auto& exam : student){
+            std::cout << readMatrix[student.size()][exam] << " ";
+        }
+        std::cout << "\n";
+    }
+
+
+    enrolementMatrix enrollment = readMatrixFileAndMakeMatrix("Matrix.txt");
+
+    int numExams = enrollment[0].size();
+    int numStudents = enrollment.size();
+
+
+
+
     return 0;
 }

@@ -15,7 +15,7 @@
 // Genome: [3, 1, 2, 1, 4, 2, 3, 4, 1, 2]
 // The index is the exam index 0 = exam 0;
 
-const int GENOME_SIZE = 8;
+// const int GENOME_SIZE;
 const int totalGenerations = 10;
 const int POPULATION_SIZE = 100;
 const int tournament_Size = 3;
@@ -143,6 +143,72 @@ GENOME tournamentSelection(const std::vector<GENOME>& pop, const std::vector<int
     return pop[bestIndex];
 }
 
+std::pair<GENOME, GENOME> singlePointCrossover(GENOME parent1, GENOME parent2){
+    std::pair<GENOME, GENOME> Children;
+    
+    for(int i = 0; i < parent1.size(); i++){
+        if(i < parent1.size()/2){
+            Children.first.push_back(parent1[i]);
+            Children.second.push_back(parent2[i]);
+        }else{
+            Children.first.push_back(parent2[i]);
+            Children.second.push_back(parent1[i]);
+        }
+    }
+    return Children;
+}
+
+void printGenome(GENOME geno){
+    for(int i = 0; i < geno.size(); i++){
+        std::cout << geno[i];
+    }
+}
+
+double calculateAverage(const std::vector<int>& fitnessScores) {    
+    int sum = 0;
+    for(int score : fitnessScores) {
+        sum += score;
+    }
+    
+    return static_cast<double>(sum) / fitnessScores.size();
+}
+
+void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix){
+    
+    // used for trackign the performance over generations
+    std::vector<int> averageFitness;
+    for(int gen = 0; gen < totalGenerations; gen++){
+        
+        std::vector<int> fitnessScores;
+        
+        for(const auto& chrom : startingPopulation) {
+            fitnessScores.push_back(caculateFitness(chrom, matrix));
+        }
+        
+        std::vector<GENOME> nextGeneration;
+
+        while(nextGeneration.size() < startingPopulation.size()) {
+            
+            // SELECT PARENTS via tournament
+            GENOME parent1 = tournamentSelection(startingPopulation, fitnessScores, tournament_Size);
+            GENOME parent2 = tournamentSelection(startingPopulation, fitnessScores, tournament_Size);
+            
+            // CROSSOVER
+            std::pair<GENOME, GENOME> children = singlePointCrossover(parent1, parent2);
+            
+            // TODO: add mutate here
+            
+            nextGeneration.push_back(children.first);
+            nextGeneration.push_back(children.second);
+        }
+        startingPopulation = nextGeneration;
+
+        int avgFitness = calculateAverage(fitnessScores);
+        std::cout << avgFitness << std::endl;
+        averageFitness.push_back(avgFitness);
+    }
+}
+
 int main(){
     srand(time(0));
 
@@ -176,15 +242,29 @@ int main(){
         index++;
     }
 
-    std::vector<int> scores;
+    // std::vector<int> scores;
 
-    for(const auto& geno : randPOP){
-        scores.push_back(caculateFitness(geno, matrix));
-    }
+    // for(const auto& geno : randPOP){
+    //     scores.push_back(caculateFitness(geno, matrix));
+    // }
 
-    GENOME TPC = tournamentSelection(randPOP, scores, tournament_Size);
+    // GENOME TPC = tournamentSelection(randPOP, scores, tournament_Size);
 
-    std::cout << "\n" << "fitness chosen: " << caculateFitness(TPC, matrix);
+    // std::cout << "\n" << "fitness chosen: " << caculateFitness(TPC, matrix);
+
+    // std::cout << "\n" <<"Testing crossover" << "\n";
+
+    // GENOME parent1 = {1, 1, 1, 1};
+    // GENOME parent2 = {2, 2, 2, 2};
+
+    // std::pair<GENOME, GENOME> children = singlePointCrossover(parent1, parent2);
+
+    // printGenome(children.first);
+    // std::cout << "\n";
+    // printGenome(children.second);
+    // std::cout << "\n";
+
+    runGA(randPOP, matrix);
 
     return 0;
 }

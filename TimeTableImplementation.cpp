@@ -49,13 +49,14 @@ std::vector<GENOME> generatePopulation(){
 }
 
 int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
-    int hardViolations;
-    int softViolations;
+    int hardViolations = 0;
+    int softViolations = 0;
 
+    int score;
 
     for(const auto& student : enrolementMatrix){
         std::vector<int> studentsExamTime;
-        int examID;
+        int examID = 0;
 
         for(const auto& takesExam: student){
             if(takesExam == 1){
@@ -76,7 +77,7 @@ int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
             }
             seen.insert(slot);
         }
-
+        //soft constraints
         if(studentsExamTime.size() > 1){
             std::sort(studentsExamTime.begin(), studentsExamTime.end());
 
@@ -88,31 +89,25 @@ int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
         }
         //else no soft violations as there is just 1 exam scheduled
 
-
-
     }
 
     if(hardViolations > 1){
-        return -1000;
+        score = -1000;
+        // std::cout <<" " << score;
+        return score;
     }
     else{
-        return 10 - softViolations;
+        score = 10 - softViolations;
+        // std::cout <<" " << score;
+        return score;
     }
 
-
-    return 
 }
 
-// GENOME findParentTournament(std::vector<GENOME>){
-
-// };
-
-
 int main(){
-
     std::vector<GENOME> randPOP = generatePopulation();
     int index = 1;
-
+        
     for(const auto GENO : randPOP){
         
         
@@ -122,11 +117,19 @@ int main(){
            std::cout <<  *it;       
         }
 
-        std::cout << " " << "Fitness: " << caculateFitness(GENO); 
+        enrolementMatrix testMatrix{
+            {1, 0, 0, 1, 0},
+            {1, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {1, 0, 0, 0, 1}
+        };
+        
+
+        std::cout << " " << "Fitness: " << caculateFitness(GENO, testMatrix); 
 
         std::cout << "\n";
         ++index;
     }
-
+    
     return 0;
 }

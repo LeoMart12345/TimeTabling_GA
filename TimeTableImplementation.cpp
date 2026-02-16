@@ -19,7 +19,6 @@ std::random_device rd("default");
 std::uniform_int_distribution uid_100(1, 100);
 std::uniform_int_distribution uid_8(1, 8);
 
-
 // Specific to timetabling:
 using enrolementMatrix = std::vector<std::vector<int>>;
 
@@ -70,7 +69,6 @@ std::vector<GENOME> generatePopulation(int popSize, int numExams, int numTimeSlo
     
     return population;
 }
-
 
 
 int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){

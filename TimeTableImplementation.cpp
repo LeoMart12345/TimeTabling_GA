@@ -185,8 +185,22 @@ void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix, int 
         for(const auto& chrom : startingPopulation) {
             fitnessScores.push_back(caculateFitness(chrom, matrix));
         }
+
+        // as a way to have elitism
+        int bestIndex = 0;
+        int bestFitness = fitnessScores[0];
+        for(int i = 1; i < fitnessScores.size(); i++) {
+            if(fitnessScores[i] > bestFitness) {
+                bestFitness = fitnessScores[i];
+                bestIndex = i;
+            }
+        }
         
+        GENOME bestSolution = startingPopulation[bestIndex];
+
         std::vector<GENOME> nextGeneration;
+        // add those elite solutions to the next generation
+        nextGeneration.push_back(bestSolution);
 
         while(nextGeneration.size() < startingPopulation.size()) {
             
@@ -199,11 +213,8 @@ void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix, int 
             
             // Mutation
             std::uniform_int_distribution<int> uid_ts(1, numTimeSlots);
-            // std::uniform_int_distribution<int> uid_exam(0, children.first.size() - 1);
-
             std::uniform_int_distribution<int> uid_exam(0, children.first.size() - 1);
 
-            // TODO: add mutate here
             // chance of mutation: 5%
             int randInt = uid_100(rd);
             int randIndex = uid_exam(rd);
@@ -213,14 +224,21 @@ void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix, int 
             if(randInt <= mutation_Rate){
                 children.first[randIndex] = randTimeSlot;
             }
-
+            // mutate the second child also
+            if(uid_100(rd) <= mutation_Rate){
+                int ranIndex = uid_exam(rd);
+                int randTimeSlot = uid_ts(rd);
+                children.second[ranIndex] = randTimeSlot;
+            }
+            
             nextGeneration.push_back(children.first);
             nextGeneration.push_back(children.second);
         }
         startingPopulation = nextGeneration;
 
         int avgFitness = calculateAverage(fitnessScores);
-        std::cout << "GENERATION:" << gen << ":   AverageFitness: "<< avgFitness << std::endl;
+        
+        std::cout << "GENERATION:" << gen << "   AvgFitness: "<< avgFitness << "   BestFitness: " << bestFitness << std::endl;
         averageFitness.push_back(avgFitness);
     }
 }
@@ -242,7 +260,9 @@ int main(){
     // to print the matrix
     for(const auto& student: matrix){
         for(const auto& exam : student){
-            std::cout << matrix[student.size()][exam] << " ";
+            // std::cout << matrix[student.size()][exam] << " ";
+            std::cout << exam << " ";
+
         }
         std::cout << "\n";
     }

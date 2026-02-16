@@ -8,12 +8,6 @@
 #include <unordered_set>
 #include <iostream>
 #include <fstream>
-//Hard constraints: student cant have >1 test on at a time
-//Soft constraint: minimize the consecutive tests for a student
-
-// TODO: implement the new genome representation: 
-// Genome: [3, 1, 2, 1, 4, 2, 3, 4, 1, 2]
-// The index is the exam index 0 = exam 0;
 
 // const int GENOME_SIZE;
 const int totalGenerations = 1000;

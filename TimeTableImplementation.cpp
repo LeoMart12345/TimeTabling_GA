@@ -10,7 +10,7 @@
 #include <fstream>
 
 // const int GENOME_SIZE;
-const int totalGenerations = 1000;
+const int totalGenerations = 100;
 const int POPULATION_SIZE = 100;
 const int tournament_Size = 3;
 const int mutation_Rate = 5; // 5%
@@ -122,7 +122,7 @@ int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
         return score;
     }
     else{
-        score = 10 - softViolations;
+        score = 1000 - softViolations;
         // std::cout <<" " << score;
         return score;
     }
@@ -178,6 +178,9 @@ void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix, int 
     
     // used for trackign the performance over generations
     std::vector<int> averageFitness;
+    GENOME globalBest; // to keep track of the best solution
+    int globalBestFitness = -10000;
+    
     for(int gen = 0; gen < totalGenerations; gen++){
         
         std::vector<int> fitnessScores;
@@ -197,6 +200,11 @@ void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix, int 
         }
         
         GENOME bestSolution = startingPopulation[bestIndex];
+
+        if(bestFitness > globalBestFitness) {
+            globalBestFitness = bestFitness;
+            globalBest = bestSolution;
+        }
 
         std::vector<GENOME> nextGeneration;
         // add those elite solutions to the next generation
@@ -240,14 +248,27 @@ void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix, int 
         
         std::cout << "GENERATION:" << gen << "   AvgFitness: "<< avgFitness << "   BestFitness: " << bestFitness << std::endl;
         averageFitness.push_back(avgFitness);
+       
+    
     }
+
+    /// summary statss:
+        std::cout << "\nBest Solution: [";
+        for(int i = 0; i < globalBest.size(); i++) {
+            std::cout << globalBest[i];
+            if(i < globalBest.size() - 1) {
+                std::cout << ", ";
+            }
+        }
+
+        std::cout << "] Fitness=" << globalBestFitness << std::endl;
 }
 
 int main(){
     srand(time(0));
 
-    //read in the data from the file
-    FileData fileStruct = readMatrixFileAndMakeMatrix("Matrix.txt");
+    //read in the data from the file    
+    FileData fileStruct = readMatrixFileAndMakeMatrix("medium-1.txt");
 
     int numExams = fileStruct.numExams;
     int numStudents = fileStruct.numStudents;

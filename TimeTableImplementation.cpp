@@ -16,7 +16,7 @@
 // The index is the exam index 0 = exam 0;
 
 // const int GENOME_SIZE;
-const int totalGenerations = 10;
+const int totalGenerations = 1000;
 const int POPULATION_SIZE = 100;
 const int tournament_Size = 3;
 const int mutation_Rate = 5; // 5%
@@ -207,15 +207,17 @@ void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix, int 
             std::uniform_int_distribution<int> uid_ts(1, numTimeSlots);
             // std::uniform_int_distribution<int> uid_exam(0, children.first.size() - 1);
 
+            std::uniform_int_distribution<int> uid_exam(0, children.first.size() - 1);
+
             // TODO: add mutate here
             // chance of mutation: 5%
             int randInt = uid_100(rd);
-            int 
+            int randIndex = uid_exam(rd);
             int randTimeSlot = uid_ts(rd);
 
             // mutating the first child with a valid different exam time
             if(randInt <= mutation_Rate){
-                children.first[ranIndex] = randTimeSlot;
+                children.first[randIndex] = randTimeSlot;
             }
 
             nextGeneration.push_back(children.first);

@@ -1,5 +1,11 @@
 TimeTableImplementation.cpp is main file to compile and run. can just run Test.exe if needed.
 
+To Compile
+ g++ TimeTableImplementation.cpp -o Test
+
+To Run
+./Test
+
 Test matrices are included
 
 Functions:

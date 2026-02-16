@@ -116,7 +116,7 @@ int caculateFitness(const GENOME& geno, enrolementMatrix enrolementMatrix){
 
     }
 
-    if(hardViolations > 1){
+    if(hardViolations > 0){
         score = -1000;
         // std::cout <<" " << score;
         return score;

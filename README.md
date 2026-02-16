@@ -1,3 +1,7 @@
+TimeTableImplementation.cpp is main file to compile and run. can just run Test.exe if needed.
+
+Test matrices are included
+
 Functions:
 readMatrixFileAndMakeMatrix(filename): Reads input file and returns enrollment matrix and problem dimensions
 

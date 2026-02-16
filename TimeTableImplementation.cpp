@@ -28,7 +28,6 @@ const int NUMBER_OF_STUDENTS = 5;
 
 using GENOME = std::vector<int>;
 
-
 struct FileData {
     enrolementMatrix matrix;
     int numExams;

@@ -204,7 +204,7 @@ void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix){
         startingPopulation = nextGeneration;
 
         int avgFitness = calculateAverage(fitnessScores);
-        std::cout << avgFitness << std::endl;
+        std::cout << "GENERATION:" << gen << avgFitness << std::endl;
         averageFitness.push_back(avgFitness);
     }
 }
@@ -241,28 +241,6 @@ int main(){
         std::cout << "\n";
         index++;
     }
-
-    // std::vector<int> scores;
-
-    // for(const auto& geno : randPOP){
-    //     scores.push_back(caculateFitness(geno, matrix));
-    // }
-
-    // GENOME TPC = tournamentSelection(randPOP, scores, tournament_Size);
-
-    // std::cout << "\n" << "fitness chosen: " << caculateFitness(TPC, matrix);
-
-    // std::cout << "\n" <<"Testing crossover" << "\n";
-
-    // GENOME parent1 = {1, 1, 1, 1};
-    // GENOME parent2 = {2, 2, 2, 2};
-
-    // std::pair<GENOME, GENOME> children = singlePointCrossover(parent1, parent2);
-
-    // printGenome(children.first);
-    // std::cout << "\n";
-    // printGenome(children.second);
-    // std::cout << "\n";
 
     runGA(randPOP, matrix);
 

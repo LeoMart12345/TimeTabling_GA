@@ -19,6 +19,13 @@
 const int totalGenerations = 10;
 const int POPULATION_SIZE = 100;
 const int tournament_Size = 3;
+const int mutation_Rate = 5; // 5%
+
+std::random_device rd("default");
+std::uniform_int_distribution uid_100(1, 100);
+std::uniform_int_distribution uid_8(1, 8);
+
+
 // Specific to timetabling:
 using enrolementMatrix = std::vector<std::vector<int>>;
 
@@ -173,7 +180,7 @@ double calculateAverage(const std::vector<int>& fitnessScores) {
     return static_cast<double>(sum) / fitnessScores.size();
 }
 
-void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix){
+void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix, int numTimeSlots){
     
     // used for trackign the performance over generations
     std::vector<int> averageFitness;
@@ -196,15 +203,28 @@ void runGA(std::vector<GENOME> startingPopulation, enrolementMatrix matrix){
             // CROSSOVER
             std::pair<GENOME, GENOME> children = singlePointCrossover(parent1, parent2);
             
+            // Mutation
+            std::uniform_int_distribution<int> uid_ts(1, numTimeSlots);
+            // std::uniform_int_distribution<int> uid_exam(0, children.first.size() - 1);
+
             // TODO: add mutate here
-            
+            // chance of mutation: 5%
+            int randInt = uid_100(rd);
+            int 
+            int randTimeSlot = uid_ts(rd);
+
+            // mutating the first child with a valid different exam time
+            if(randInt <= mutation_Rate){
+                children.first[ranIndex] = randTimeSlot;
+            }
+
             nextGeneration.push_back(children.first);
             nextGeneration.push_back(children.second);
         }
         startingPopulation = nextGeneration;
 
         int avgFitness = calculateAverage(fitnessScores);
-        std::cout << "GENERATION:" << gen << avgFitness << std::endl;
+        std::cout << "GENERATION:" << gen << ":   AverageFitness: "<< avgFitness << std::endl;
         averageFitness.push_back(avgFitness);
     }
 }
@@ -218,6 +238,8 @@ int main(){
     int numExams = fileStruct.numExams;
     int numStudents = fileStruct.numStudents;
     int numTimeSlots = fileStruct.numTimeSlots;
+
+    std::uniform_int_distribution uid_ts(1, numTimeSlots);
 
     enrolementMatrix matrix = fileStruct.matrix;
 
@@ -242,7 +264,7 @@ int main(){
         index++;
     }
 
-    runGA(randPOP, matrix);
+    runGA(randPOP, matrix, numTimeSlots);
 
     return 0;
 }
